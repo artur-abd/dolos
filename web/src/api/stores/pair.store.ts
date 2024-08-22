@@ -78,17 +78,22 @@ export const usePairStore = defineStore("pairs", () => {
       const totalOverlap = parseFloat(row.totalOverlap);
       const leftCovered = parseFloat(row.leftCovered);
       const rightCovered = parseFloat(row.rightCovered);
-      pairs[id] = {
-        id,
-        similarity,
-        longestFragment,
-        totalOverlap,
-        leftFile: files[parseInt(row.leftFileId)],
-        rightFile: files[parseInt(row.rightFileId)],
-        fragments: null,
-        leftCovered,
-        rightCovered,
-      };
+      
+      const leftData = parseUser(files[parseInt(row.leftFileId)].label.name)
+      const rightData =parseUser(files[parseInt(row.rightData)].label.name)
+      if (leftData.username != rightData.username && leftData.problem == rightData.problem) {
+        pairs[id] = {
+          id,
+          similarity,
+          longestFragment,
+          totalOverlap,
+          leftFile: files[parseInt(row.leftFileId)],
+          rightFile: files[parseInt(row.rightFileId)],
+          fragments: null,
+          leftCovered,
+          rightCovered,
+        };
+      }
     }
     return pairs;
   }
@@ -125,6 +130,12 @@ export const usePairStore = defineStore("pairs", () => {
   // Get a pair by its ID.
   function getPair(id: number): Pair {
     return pairsActiveById.value[id];
+  }
+  function parseUser(file: String) : Data {
+    const nameLast = file.indexOf('-')
+    const problemLast = file.indexOf('-', nameLast)
+
+    return {username : file.substring(0, nameLast), problem: file.substring(nameLast + 1, problemLast)}
   }
 
   // Get a list of pairs for a given file.
@@ -186,3 +197,8 @@ export const usePairStore = defineStore("pairs", () => {
     getClusterById,
   };
 });
+
+export interface Data {
+  username :String,
+  problem : String,
+}
