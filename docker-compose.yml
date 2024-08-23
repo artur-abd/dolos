@@ -15,8 +15,8 @@ services:
       interval: 5s
       test: healthcheck.sh --su-mysql --connect --innodb_initialized
   web:
-    image: ghcr.io/dodona-edu/dolos-web
-    # build: ./web/
+    #image: ghcr.io/dodona-edu/dolos-web
+    build: ./web/
     ports:
       - "8080:8080"
     environment:
@@ -34,7 +34,7 @@ services:
       test: curl --fail http://localhost:8080 || exit 1
   api:
     image: ghcr.io/dodona-edu/dolos-api
-    # build: ./api/
+    #build: ./api/
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails db:prepare && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - dolos-api-storage:/dolos/storage
@@ -61,7 +61,7 @@ services:
       test: curl --fail "$$DOLOS_API_URL/up" || exit 1
   worker:
     image: ghcr.io/dodona-edu/dolos-api
-    # build: ./api/
+    #build: ./api/
     command: bash -c "bundle exec rails jobs:work"
     volumes:
       - dolos-api-storage:/dolos/storage
